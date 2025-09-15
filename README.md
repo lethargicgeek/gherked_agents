@@ -1,2 +1,3 @@
 # gherked_agents
-Gherked Agents
+Gherked Agents.  Behavior focused documentation written by agents
+
