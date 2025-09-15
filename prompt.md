@@ -1,133 +1,502 @@
+# Gherkin-Based Agent System for Claude Code
 
-Create/update a set of agents and commands for claude code that can easily be copied to claude code.   Would like to use igniter 
-  
-# Key points of this expansion  
-  
-# Document Folder Structure  
-Folder structure pre-requisites. Create the following folders if they don't already exist  
-  
-- context_specs  
-  - 1_features
-    - 0001-{feature namesa} (incremented folder, increment for each new feature)  
-      - given_prompt.md (supplied by user when creating a new feature)  
-      - changes_for_2_behaviors.md  
-      - changes_for_3_architecture.md
-      - changes_for_4_implementation_design.md
-      - changes_for_5_test_scripts.md
-    - checklist_for_stories.md  (lists all the folders in the 01_stories folder and tracks whether all it's sub check list tasks have been completed)
-	    - creates a sub-check list for each story that checks off whether each of the following has been created and executed:
-		    - created changes_for_product_requirements.md 
-		    - created changes_for_architecture_design.md
-		    - created changes_for_implementation.md
-		    - created changes_for_acceptance_tests.md
-		    - applied changes_for_product_requirements.md 
-		    - applied changes_for_architecture_design.md
-		    - applied changes_for_implementation.md
-		    - applied changes_for_acceptance_tests.md
-  - 2_role_gherkins
-	  - user_actors.md
-  - 3_user_interface_context
-  - 4_architecture_context
-	  - Divided into folders for each feature (groups of stories)
-	  - Should already be sharded
-  - 5_component_gherkins
-  - 6_test_scripts
-    -   Should contain manual tests 
+## Objective
+A structured agent system that transforms user feature requests into comprehensive documentation and test specifications using Gherkin scenarios, maintaining clear separation between user requirements and automated generation.
 
-# Agents  
-## Agent Rules  
-- Agents should never update any files prefixed with 'given_'.  These files were designed by a user.  The exception is the initializer agent  
-  
-## The Agents  
-  
-### 0_initializer  
-- Creates all the initial files in the document structure  
-  
-### 1_features_agent
-- Based bmad-core/agent/analyst.md  
-- Looks through all the given_prompts and creates a story.md file within the story's folder to formalize the given_prompt
+## System Overview
+This system uses a series of specialized agents to progressively refine feature requests from high-level user stories into detailed behavioral specifications, architecture designs, and test scripts. Each agent operates on specific document layers while preserving user-provided inputs.
 
-### 2_role_gherkins_agent
-- Only able to update context_specs/2_behavior folder
-- output files into the context_specs/02_product_requirements and updates the appropriate feature folder
+## Document Folder Structure
 
-### 3_architecture_context_agent
-- based on bmad-core/agent/architect.md
-- output files into the context_specs/03_architecture_design and updates the appropriate feature folder
-
-## 4_test_scripts
-- based on bmad-core/agent/qa.md
-- output files into the context_specs/04_acceptance_criteria
-  
-  
-# Commands  
-  
-## /init  
-- Creates the initial docs folder structure.
-- Installs usage rules from https://github.com/ash-project/usage_rules
-	- mix usage_rules.sync .rules --all
-  
-## /execute_story_updates
-- for each folder, check to see if 01_stories/checklist_for_stories.md has all the story folders listed.  If a folder is not listed, add it with the status of pending.  A story folder is not checked off until 
-
-## /execute_specs_from_stories
-- Updates all the documentation.  Does not update code.
-
-
-
-
------------ 
-Notes: 
-Example comparison
-
-Let's use the example of a feature for an e-commerce website that allows a user to "add items to their cart."
-
-**User story**  
-_As a shopper, I want to add items to my cart, so that I can purchase them later_. 
-
-This user story provides the feature's core intent and value, but it leaves many questions unanswered:
-
-- What happens if the item is out of stock?
-- What happens if the cart is already full?
-- What happens if the user tries to add the same item twice?
-
-**Gherkin scenarios**  
-The Gherkin scenarios define the acceptance criteria for the user story, covering the different variations and outcomes. 
-
-**Scenario 1: Adding an item to an empty cart**
-
-gherkin
+### Prerequisites
+Create the following folder structure if it doesn't already exist:
 
 ```
+gherked_specs/
+├── 1_stories/
+│   ├── stories_status.md              # Tracks story status (new/pending/complete)
+│   └── 0001_{story_name}/           # Incremented for each new story
+│       ├── given_prompt.md            # User-supplied story request prompt
+│       ├── story.md                   # Formalized user story
+│       ├── story_checklist.md         # Detailed implementation checklist
+│       ├── changes_for_2_role_gherkins.md
+│       ├── changes_for_3_user_interface_context.md
+│       ├── changes_for_4_architecture_context.md
+│       ├── changes_for_5_component_gherkins.md
+│       └── changes_for_6_test_scripts.md
+├── 2_role_gherkins/
+│   ├── role_actors.md                 # Defines system actors and roles
+│   └── {role_actor_name}/             # Subfolder for each actor defined in role_actors.md
+│       └── {feature_name}.md          # Behavioral specifications per major feature
+├── 3_user_interface_context/
+│   └── {feature_folders}/             # UI specifications per feature
+├── 4_architecture_context/
+│   └── {feature_folders}/             # Architecture designs per feature
+├── 5_component_gherkins/
+│   ├── components.md                  # Defines all system components
+│   └── {component_name}/              # Subfolder for each component
+│       └── {feature_name}.md          # All behaviors for a feature within this component
+└── 6_test_scripts/
+    └── {feature_folders}/             # Manual and automated test scripts
+```
+
+### Checklist Structure
+
+#### Stories Status (1_stories/stories_status.md)
+Tracks high-level status for each story:
+- **new**: Story folder created with only given_prompt.md
+- **pending**: Story is being actively processed through agents
+- **complete**: All changes have been created and applied
+
+Example:
+```markdown
+| Story ID | Story Name | Status | Last Updated |
+|----------|------------|--------|---------------|
+| 0001 | user_login | complete | 2025-01-15 |
+| 0002 | shopping_cart | pending | 2025-01-16 |
+| 0003 | checkout_flow | new | 2025-01-17 |
+```
+
+#### Story Checklist (story_checklist.md in each story folder)
+Detailed implementation tracking for each story:
+- [ ] Created changes_for_2_role_gherkins.md
+- [ ] Created changes_for_3_user_interface_context.md
+- [ ] Created changes_for_4_architecture_context.md
+- [ ] Created changes_for_5_component_gherkins.md
+- [ ] Created changes_for_6_test_scripts.md
+- [ ] Applied changes_for_2_role_gherkins.md
+- [ ] Applied changes_for_3_user_interface_context.md
+- [ ] Applied changes_for_4_architecture_context.md
+- [ ] Applied changes_for_5_component_gherkins.md
+- [ ] Applied changes_for_6_test_scripts.md
+
+## Change File Format
+Each `changes_for_*.md` file follows this structure:
+```markdown
+# Changes for [Layer Name]
+
+## Summary
+Brief description of changes to be made
+
+## Additions
+- New files or sections to create
+
+## Modifications
+- Existing files to update with specific changes
+
+## Validations
+- Criteria to verify changes were applied correctly
+```
+
+## Agent Definitions
+
+### Agent Rules
+1. Agents NEVER update files prefixed with 'given_' (user-provided content)
+2. Each agent operates only within its designated folder scope
+3. Agents must validate their inputs before processing
+4. All agent outputs must be deterministic and reproducible
+5. Agents must log their actions for audit trail
+
+### 0_initializer_agent
+#### Purpose
+Bootstrap the project structure and initial configuration
+
+#### Inputs
+Project root directory
+
+#### Outputs
+Complete folder structure, initial configuration files
+
+#### Actions
+- Creates all folders in the document structure
+- Installs usage rules from https://github.com/ash-project/usage_rules into architecture_context folder
+- Initializes stories_status.md at 1_stories root
+
+#### Error Handling
+Fails if unable to create directories or if structure already exists
+
+### 1_stories_agent
+#### Purpose
+Transform user prompts into formalized user stories
+
+#### Inputs
+given_prompt.md files in feature folders
+
+#### Outputs
+- story.md with structured user stories
+- story_checklist.md in the story folder
+
+#### Actions
+- Analyzes given_prompt.md for feature intent
+- Creates story.md with "As a..., I want..., So that..." format
+- Identifies acceptance criteria
+- Creates story_checklist.md in story folder
+- Updates stories_status.md to "pending"
+
+#### Validation
+Story must contain actor, action, and benefit clauses
+
+### 2_role_gherkins_agent
+#### Purpose
+Generate behavioral specifications in Gherkin format
+
+#### Inputs
+- story.md from the story folder
+- given_prompt.md (original user request)
+
+#### Outputs
+- role_actors.md defining all system actors (if not exists)
+- Gherkin scenarios organized by actor in 2_role_gherkins/{actor}/ folders
+- Behavioral specifications in {feature_name}.md files per actor
+- changes_for_2_role_gherkins.md in each story folder
+
+#### Actions
+- Reviews story.md to understand requirements
+- Identifies or creates role actors in role_actors.md
+- Creates subfolder for each role actor if not exists
+- Creates Given/When/Then scenarios organized by actor and feature
+- Generates behavioral specifications as {feature_name}.md in actor folders
+- Generates changes_for_2_role_gherkins.md documenting all changes
+
+#### Scope
+- Can only update gherked_specs/2_role_gherkins folder
+- Can only update changes_for_2_role_gherkins.md in story folders
+
+#### Validation
+Each scenario must be executable and unambiguous
+
+### 3_user_interface_context_agent
+#### Purpose
+Design user interface specifications and interactions
+
+#### Inputs
+- story.md from the story folder
+- changes_for_2_role_gherkins.md (to understand behavioral requirements)
+- Previous role Gherkin scenarios
+
+#### Outputs
+- UI specifications in 3_user_interface_context folder
+- changes_for_3_user_interface_context.md in each story folder
+
+#### Actions
+- Reviews previous changes files to understand behavioral context
+- Creates UI context specifications based on role Gherkins
+- Designs user interface components
+- Generates changes_for_3_user_interface_context.md in story folder
+
+#### Scope
+- Can only update gherked_specs/3_user_interface_context folder
+- Can only update changes_for_3_user_interface_context.md in story folders
+
+#### Validation
+UI specifications must support all user interactions
+
+### 4_architecture_context_agent
+#### Purpose
+Design system architecture and technical specifications
+
+#### Inputs
+- story.md from the story folder
+- changes_for_2_role_gherkins.md (behavioral requirements)
+- changes_for_3_user_interface_context.md (UI requirements)
+- Previous UI and role specifications
+
+#### Outputs
+- Architecture designs in 4_architecture_context folder
+- changes_for_4_architecture_context.md in each story folder
+
+#### Actions
+- Reviews all previous changes files to understand requirements
+- Designs system architecture components to support UI and behaviors
+- Creates technical specifications
+- Generates changes_for_4_architecture_context.md in story folder
+
+#### Scope
+- Can only update gherked_specs/4_architecture_context folder
+- Can only update changes_for_4_architecture_context.md in story folders
+
+#### Validation
+Architecture must support all defined behaviors
+
+### 5_component_gherkins_agent
+#### Purpose
+Create component-level Gherkin specifications
+
+#### Inputs
+- story.md from the story folder
+- changes_for_2_role_gherkins.md (behavioral requirements)
+- changes_for_3_user_interface_context.md (UI requirements)
+- changes_for_4_architecture_context.md (architecture decisions)
+- Previous specifications from all layers
+
+#### Outputs
+- components.md defining all system components (if not exists)
+- Component Gherkin scenarios organized in 5_component_gherkins/{component}/ folders
+- Feature specifications in {feature_name}.md files containing all behaviors for that feature
+- changes_for_5_component_gherkins.md in each story folder
+
+#### Actions
+- Reviews all previous changes files to understand full context
+- Identifies or creates components in components.md
+- Creates subfolder for each component if not exists
+- Breaks down features into component-level scenarios
+- Maps user scenarios to component implementations
+- Groups all behaviors for a feature into {feature_name}.md in component folders
+- Generates changes_for_5_component_gherkins.md documenting all changes
+
+#### Scope
+- Can only update gherked_specs/5_component_gherkins folder
+- Can only update changes_for_5_component_gherkins.md in story folders
+
+#### Validation
+All user scenarios must map to component scenarios
+
+### 6_test_scripts_agent
+#### Purpose
+Generate comprehensive test scripts
+
+#### Inputs
+- story.md from the story folder
+- changes_for_2_role_gherkins.md (behavioral requirements)
+- changes_for_3_user_interface_context.md (UI requirements)
+- changes_for_4_architecture_context.md (architecture decisions)
+- changes_for_5_component_gherkins.md (component specifications)
+- All previous specifications and designs
+
+#### Outputs
+- Test scripts in 6_test_scripts folder
+- changes_for_6_test_scripts.md in each story folder
+
+#### Actions
+- Reviews all previous changes files to understand complete specification
+- Creates manual test procedures covering all scenarios
+- Generates automated test scaffolding
+- Ensures test coverage for all Gherkin scenarios
+- Produces changes_for_6_test_scripts.md in story folder
+
+#### Scope
+- Can only update gherked_specs/6_test_scripts folder
+- Can only update changes_for_6_test_scripts.md in story folders
+
+#### Validation
+100% coverage of Gherkin scenarios
+
+## Commands
+
+### /0_init
+#### Description
+Initialize the project structure using the 0_initializer agent
+
+#### Actions
+1. Executes the 0_initializer agent
+2. Creates complete folder structure under gherked_specs/
+3. Installs usage rules into architecture_context folder
+4. Creates initial stories_status.md file
+5. Sets up story_checklist.md template
+
+#### Usage
+Run this command first when starting a new project to set up all required folders and initial files.
+
+#### Error Handling
+- Checks if structure already exists before creating
+- Reports any permission issues or conflicts
+- Provides rollback option if initialization fails partway
+
+### /1_stories_generate_story
+#### Description
+Generate story.md and story_checklist.md from given_prompt.md for pending stories
+
+#### Actions
+1. Reads stories_status.md to identify stories with "new" or "pending" status
+2. For each identified story:
+   - Executes 1_stories_agent on given_prompt.md
+   - Creates story.md with formalized user story
+   - Creates story_checklist.md if not already present
+   - Updates stories_status.md to "pending"
+
+#### Usage
+Run after creating new given_prompt.md files to generate formal user stories
+
+#### Validation
+- Ensures given_prompt.md exists before processing
+- Skips stories that already have story.md
+
+### /2_role_gherkins_generate_changes
+#### Description
+Generate changes_for_2_role_gherkins.md for pending stories
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. Checks story_checklist.md for uncompleted role_gherkins changes
+3. Executes 2_role_gherkins_agent for eligible stories
+4. Creates/updates role_actors.md with identified actors
+5. Creates actor subfolders in 2_role_gherkins/
+6. Generates behavioral specifications in actor/{feature}.md files
+7. Creates changes_for_2_role_gherkins.md in story folder
+8. Updates story_checklist.md
+
+#### Prerequisites
+- story.md must exist in the story folder
+
+### /3_user_interface_context_generate_changes
+#### Description
+Generate changes_for_3_user_interface_context.md for pending stories
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. Checks story_checklist.md for uncompleted UI context changes
+3. Executes 3_user_interface_context_agent for eligible stories
+4. Creates changes_for_3_user_interface_context.md in story folder
+5. Updates story_checklist.md
+
+#### Prerequisites
+- story.md and role_gherkins must exist
+
+### /4_architecture_context_generate_changes
+#### Description
+Generate changes_for_4_architecture_context.md for pending stories
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. Checks story_checklist.md for uncompleted architecture changes
+3. Executes 4_architecture_context_agent for eligible stories
+4. Creates changes_for_4_architecture_context.md in story folder
+5. Updates story_checklist.md
+
+#### Prerequisites
+- story.md and UI context specifications must exist
+
+### /5_component_gherkins_generate_changes
+#### Description
+Generate changes_for_5_component_gherkins.md for pending stories
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. Checks story_checklist.md for uncompleted component gherkins changes
+3. Executes 5_component_gherkins_agent for eligible stories
+4. Creates/updates components.md with identified components
+5. Creates component subfolders in 5_component_gherkins/
+6. Generates feature specifications in component/{feature}.md files with all behaviors
+7. Creates changes_for_5_component_gherkins.md in story folder
+8. Updates story_checklist.md
+
+#### Prerequisites
+- Architecture context must be defined
+
+### /6_test_scripts_generate_changes
+#### Description
+Generate changes_for_6_test_scripts.md for pending stories
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. Checks story_checklist.md for uncompleted test scripts changes
+3. Executes 6_test_scripts_agent for eligible stories
+4. Creates changes_for_6_test_scripts.md in story folder
+5. Updates story_checklist.md
+
+#### Prerequisites
+- All previous specifications must exist
+
+### /generate_all_changes
+#### Description
+Generate all missing changes files for pending stories in sequence
+
+#### Actions
+1. Reads stories_status.md for "pending" stories
+2. For each pending story, checks story_checklist.md
+3. Executes agents in sequence for missing changes:
+   - 2_role_gherkins_agent
+   - 3_user_interface_context_agent
+   - 4_architecture_context_agent
+   - 5_component_gherkins_agent
+   - 6_test_scripts_agent
+4. Updates story_checklist.md after each generation
+5. Updates stories_status.md to "complete" when all changes generated
+
+#### Usage
+Run to automatically generate all documentation for pending stories
+
+#### Error Handling
+- Stops processing a story if any agent fails
+- Reports which stories completed and which had errors
+
+## Igniter Integration
+The system integrates with Igniter for code generation:
+- Igniter templates are stored in `.igniter/` directory
+- Each agent can trigger Igniter tasks for code scaffolding
+- Changes are staged through Igniter's review process before application
+
+## Error Handling & Recovery
+
+### Agent Failures
+- Each agent logs errors to `.logs/{agent_name}/`
+- Failed processing marks story as "failed" in checklist
+- Retry mechanism with exponential backoff
+- Manual intervention points clearly marked
+
+### Validation Failures
+- Validation errors prevent progression to next stage
+- Detailed error reports generated in `validation_errors.md`
+- Suggested fixes provided where possible
+
+### Rollback Strategy
+1. Git commits at each successful stage
+2. Rollback command: `/rollback {story_id} {stage}`
+3. Maintains audit trail of all rollbacks
+4. Re-runs validation after rollback
+
+## Workflow Sequence
+
+```mermaid
+graph TD
+    A[User creates given_prompt.md] --> B[/0_init]
+    B --> C[/execute_story_updates]
+    C --> D[1_stories_agent]
+    D --> E[story.md created]
+    E --> F[/execute_specs_from_stories]
+    F --> G[2_role_gherkins_agent]
+    G --> H[3_architecture_context_agent]
+    H --> I[4_implementation_design_agent]
+    I --> J[5_test_scripts_agent]
+    J --> K[All documentation complete]
+    K --> L[/apply_changes]
+    L --> M[Code updated]
+```
+
+## Example: E-commerce Cart Feature
+
+### User Story
+_As a shopper, I want to add items to my cart, so that I can purchase them later._
+
+### Gherkin Scenarios
+
+**Scenario 1: Adding an item to an empty cart**
+```gherkin
 Given a user is on the product page for "Cool T-shirt"
 When the user clicks "Add to Cart"
 Then the cart icon displays a count of 1
 And the user sees a confirmation message
 ```
 
-Use code with caution.
-
 **Scenario 2: Adding a second, different item to the cart**
-
-gherkin
-
-```
+```gherkin
 Given the cart contains "Cool T-shirt"
 And the user is on the product page for "Awesome Socks"
 When the user clicks "Add to Cart"
 Then the cart icon displays a count of 2
 ```
 
-Use code with caution.
-
 **Scenario 3: Adding an item that is out of stock**
-
-gherkin
-
-```
+```gherkin
 Given the product "Cool T-shirt" is out of stock
 And a user is on the product page for "Cool T-shirt"
 When the user clicks "Add to Cart"
 Then the user sees an "Out of Stock" message
 And the cart count remains unchanged
 ```
+
+## Notes
+- System designed for iterative refinement
+- Each stage builds upon previous outputs
+- Clear separation between user input and generated content
+- Maintains traceability from requirements to tests
