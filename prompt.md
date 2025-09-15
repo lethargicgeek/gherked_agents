@@ -335,8 +335,7 @@ Initialize the project structure using the 0_initializer agent
 1. Executes the 0_initializer agent
 2. Creates complete folder structure under gherked_specs/
 3. Installs usage rules into architecture_context folder
-4. Creates initial stories_status.md file
-5. Sets up story_checklist.md template
+4. Creates initial stories_status.m5. Sets up story_checklist.md template
 
 #### Usage
 Run this command first when starting a new project to set up all required folders and initial files.
@@ -485,6 +484,26 @@ Run to automatically generate all documentation for pending stories
 #### Error Handling
 - Stops processing a story if any agent fails
 - Reports which stories completed and which had errors
+
+### /sync_gherked
+#### Description
+Synchronize the .gherked folder with the latest specifications from prompt.md
+
+#### Actions
+1. Parses prompt.md for agent definitions
+2. Parses prompt.md for command definitions
+3. Updates agent files in .gherked/agents/
+4. Updates command files in .gherked/commands/
+5. Updates claude_project.json with any new agents/commands
+6. Reports changes made
+
+#### Usage
+Run after updating prompt.md to keep .gherked folder in sync
+
+#### Output
+- Updated agent and command files in .gherked/
+- Summary of changes applied
+- List of any conflicts or manual reviews needed
 
 ## Igniter Integration
 The system integrates with Igniter for code generation:

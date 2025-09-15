@@ -1,0 +1,45 @@
+{
+  "name": "Gherked Agents",
+  "description": "A structured agent system for transforming user stories into comprehensive specifications using Gherkin scenarios",
+  "version": "1.0.0",
+  "agents": {
+    "0_initializer": "../.gherked/agents/0_initializer_agent.md",
+    "1_stories": "../.gherked/agents/1_stories_agent.md",
+    "2_role_gherkins": "../.gherked/agents/2_role_gherkins_agent.md",
+    "3_user_interface_context": "../.gherked/agents/3_user_interface_context_agent.md",
+    "4_architecture_context": "../.gherked/agents/4_architecture_context_agent.md",
+    "5_component_gherkins": "../.gherked/agents/5_component_gherkins_agent.md",
+    "6_test_scripts": "../.gherked/agents/6_test_scripts_agent.md",
+    "7_conflict_checker": "../.gherked/agents/7_conflict_checker_agent.md"
+  },
+  "commands": {
+    "/0_init": "../.gherked/commands/0_init.md",
+    "/1_stories_generate_story": "../.gherked/commands/1_stories_generate_story.md",
+    "/2_role_gherkins_generate_changes": "../.gherked/commands/2_role_gherkins_generate_changes.md",
+    "/3_user_interface_context_generate_changes": "../.gherked/commands/3_user_interface_context_generate_changes.md",
+    "/4_architecture_context_generate_changes": "../.gherked/commands/4_architecture_context_generate_changes.md",
+    "/5_component_gherkins_generate_changes": "../.gherked/commands/5_component_gherkins_generate_changes.md",
+    "/6_test_scripts_generate_changes": "../.gherked/commands/6_test_scripts_generate_changes.md",
+    "/7_check_conflicts": "../.gherked/commands/7_check_conflicts.md",
+    "/generate_all_changes": "../.gherked/commands/generate_all_changes.md"
+  },
+  "templates": {
+    "story_checklist": "../.gherked/md_templates/story_checklist.md",
+    "stories_status": "../.gherked/md_templates/stories_status.md",
+    "changes": "../.gherked/md_templates/changes_template.md",
+    "tech_stack": "../.gherked/md_templates/tech_stack.md"
+  },
+  "workflow": {
+    "sequence": [
+      "/0_init",
+      "/1_stories_generate_story",
+      "/2_role_gherkins_generate_changes",
+      "/3_user_interface_context_generate_changes",
+      "/4_architecture_context_generate_changes",
+      "/5_component_gherkins_generate_changes",
+      "/6_test_scripts_generate_changes",
+      "/7_check_conflicts"
+    ],
+    "batch_command": "/generate_all_changes"
+  }
+}
