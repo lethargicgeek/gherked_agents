@@ -29,7 +29,8 @@
 - **Code Quality**: [e.g., ESLint, Black, Prettier]
 
 ## Third-Party Services
-- **Authentication**: [e.g., Auth0, Firebase Auth]
+- **Authentication**: [e.g., Phoenix Auth with JWT tokens, Auth0, Firebase Auth]
+- **Authorization**: [e.g., Ash Policies with RBAC, Auth0 Rules, Custom middleware]
 - **Payment**: [e.g., Stripe, PayPal]
 - **Email**: [e.g., SendGrid, AWS SES]
 - **Storage**: [e.g., S3, Cloudinary]
