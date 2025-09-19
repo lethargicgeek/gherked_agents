@@ -585,3 +585,91 @@ And the cart count remains unchanged
 - Each stage builds upon previous outputs
 - Clear separation between user input and generated content
 - Maintains traceability from requirements to tests
+
+## Documentation Generation
+
+### Purpose
+Automatically generate or update documentation for the Gherked agents and commands system when changes occur.
+
+### Documentation Files to Maintain
+
+#### 1. README.md for Agents (`.claude/agents/gherked/README.md`)
+Generate a comprehensive README that includes:
+- Overview of the Gherked BDD workflow system
+- List of all available agents with:
+  - Agent number and name
+  - Purpose description
+  - Key responsibilities
+  - Prerequisites
+  - Error handling approach
+- Typical workflow sequence
+- Dependencies between agents
+- Contributing guidelines
+
+#### 2. README.md for Commands (`.claude/commands/gherked/README.md`)
+Generate a comprehensive README that includes:
+- Overview of the command system
+- List of all available commands with:
+  - Command name
+  - Purpose
+  - Actions performed
+  - Prerequisites
+  - Expected outputs
+- Typical command workflow
+- Error handling scenarios
+- Output file descriptions
+- Best practices
+- Troubleshooting guide
+- Contributing guidelines
+
+#### 3. LICENSE Files
+Ensure both folders contain LICENSE files that match the project's root LICENSE:
+- `.claude/agents/gherked/LICENSE`
+- `.claude/commands/gherked/LICENSE`
+
+### Auto-Generation Triggers
+Generate or update documentation when:
+1. A new agent is added to `.claude/agents/gherked/`
+2. A new command is added to `.claude/commands/gherked/`
+3. The user explicitly requests documentation updates
+4. Major changes are made to agent or command functionality
+5. The folder structure is reorganized
+
+### Documentation Standards
+- Use clear, concise language
+- Include practical examples where appropriate
+- Maintain consistent formatting across all documentation
+- List prerequisites explicitly
+- Document error conditions and recovery steps
+- Keep the documentation in sync with actual implementation
+
+### File Structure for Documentation
+```
+.claude/
+├── agents/
+│   └── gherked/
+│       ├── README.md
+│       ├── LICENSE
+│       └── [agent files]
+└── commands/
+    └── gherked/
+        ├── README.md
+        ├── LICENSE
+        └── [command files]
+```
+
+### Implementation Notes for Documentation
+Each agent and command file uses `@include` directives to reference their actual implementation from:
+- `.gherked/agents/` - Agent implementations
+- `.gherked/commands/` - Command implementations
+
+### Documentation Validation Checklist
+When generating documentation, ensure:
+- [ ] All agents are documented in order
+- [ ] All commands are documented with their slash command syntax
+- [ ] Prerequisites are clearly stated
+- [ ] Error handling is explained
+- [ ] Workflow sequences are accurate
+- [ ] File paths are correct
+- [ ] LICENSE files are present
+- [ ] Contributing guidelines are included
