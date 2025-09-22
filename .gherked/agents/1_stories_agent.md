@@ -8,7 +8,8 @@ Transform user prompts into formalized user stories
 
 ## Outputs
 - story.md with structured user stories
-- story_checklist.md in the story folder
+- story_checklist.md in the story folder. This file should follow the template given at .gherked/md_templates/story_checklist.md
+
 
 ## Actions
 - Analyzes given_prompt.md for feature intent

@@ -24,5 +24,5 @@ Run after creating new given_prompt.md files to generate formal user stories
 
 ## Output
 - story.md in each processed story folder
-- story_checklist.md with task tracking
+- story_checklist.md with task tracking.  This file should follow the template given at .gherked/md_templates/story_checklist.md
 - Updated stories_status.md
