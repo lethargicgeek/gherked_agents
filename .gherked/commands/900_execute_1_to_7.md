@@ -25,3 +25,4 @@ Run to execute the complete workflow from story generation to conflict checking
 - changes_for_*.md files from agents 2-6
 - conflicts_report.md from agent 7
 - Updated story_checklist.md and stories_status.md
+- proceed with applying changes to documentation in /gherked_specs as outline by the story and update the story_checklist section
